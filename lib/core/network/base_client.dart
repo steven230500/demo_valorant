@@ -1,5 +1,8 @@
 import 'package:dio/dio.dart';
-import '../constants/constants.dart';
+
+import '../error/result.dart';
+import '../error/app_error.dart';
+import '../utils/constants/constants.dart';
 
 class BaseClient {
   late final Dio _dio;
@@ -20,18 +23,65 @@ class BaseClient {
 
   Dio get dio => _dio;
 
-  Future<Response> get(
-    String path, {
-    Map<String, dynamic>? queryParameters,
-  }) async {
-    return await _dio.get(path, queryParameters: queryParameters);
+  Future<Result<Response>> get(
+      String path, {
+        Map<String, dynamic>? queryParameters,
+      }) async {
+    try {
+      final response = await _dio.get(
+        path,
+        queryParameters: queryParameters,
+      );
+      return Success(response);
+    } on DioException catch (e) {
+      return Failure(_mapDioError(e));
+    } catch (e) {
+      return Failure(
+        UnknownError(e.toString()),
+      );
+    }
   }
 
-  Future<Response> post(
-    String path, {
-    dynamic data,
-    Map<String, dynamic>? queryParameters,
-  }) async {
-    return await _dio.post(path, data: data, queryParameters: queryParameters);
+  Future<Result<Response>> post(
+      String path, {
+        dynamic data,
+        Map<String, dynamic>? queryParameters,
+      }) async {
+    try {
+      final response = await _dio.post(
+        path,
+        data: data,
+        queryParameters: queryParameters,
+      );
+      return Success(response);
+    } on DioException catch (e) {
+      return Failure(_mapDioError(e));
+    } catch (e) {
+      return Failure(
+        UnknownError(e.toString()),
+      );
+    }
+  }
+
+  AppError _mapDioError(DioException e) {
+    switch (e.type) {
+      case DioExceptionType.connectionTimeout:
+      case DioExceptionType.sendTimeout:
+      case DioExceptionType.receiveTimeout:
+      case DioExceptionType.connectionError:
+        return const NetworkError('Error de conexión');
+
+      case DioExceptionType.badResponse:
+        final statusCode = e.response?.statusCode;
+        return ServerError(
+          'Error del servidor (${statusCode ?? 'desconocido'})',
+        );
+
+      case DioExceptionType.cancel:
+        return const NetworkError('Petición cancelada');
+
+      default:
+        return UnknownError(e.message ?? 'Error desconocido');
+    }
   }
 }

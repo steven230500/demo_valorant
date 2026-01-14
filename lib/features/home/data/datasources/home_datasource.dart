@@ -1,9 +1,11 @@
+import 'package:demo_valorant/core/error/app_error.dart';
+import 'package:demo_valorant/core/error/result.dart';
+
 import '../../../../core/network/base_client.dart';
 import '../models/agent.dart';
-import 'package:dio/dio.dart';
 
 abstract class HomeRemoteDataSource {
-  Future<List<AgentModel>> getAgents();
+  Future<Result<List<AgentModel>>> getAgents();
 }
 
 class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
@@ -12,19 +14,31 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
   HomeRemoteDataSourceImpl(this._client);
 
   @override
-  Future<List<AgentModel>> getAgents() async {
-    final response = await _client.get('/agents');
+  Future<Result<List<AgentModel>>> getAgents() async {
+    final result = await _client.get('/agents');
 
-    if (response.statusCode == 200) {
+    return switch (result) {
+      Success(data: final response) => _mapResponse(response),
+      Failure(error: final error) => Failure(error),
+    };
+  }
+
+  Result<List<AgentModel>> _mapResponse(response) {
+    try {
       final List<dynamic> data = response.data['data'];
-      return data
-          .map((json) => AgentModel.fromJson(json as Map<String, dynamic>))
+
+      final agents = data
+          .map(
+            (json) => AgentModel.fromJson(
+          json as Map<String, dynamic>,
+        ),
+      )
           .toList();
-    } else {
-      throw DioException(
-        requestOptions: response.requestOptions,
-        response: response,
-        type: DioExceptionType.badResponse,
+
+      return Success(agents);
+    } catch (e) {
+      return Failure(
+        const UnknownError('Error al parsear agentes'),
       );
     }
   }
