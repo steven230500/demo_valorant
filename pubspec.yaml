@@ -1,13 +1,12 @@
 name: demo_valorant
 description: "A new Flutter project."
 
-publish_to: 'none'
+publish_to: "none"
 
 version: 1.0.0+1
 
 environment:
   sdk: ^3.9.2
-
 
 dependencies:
   flutter:
@@ -18,10 +17,12 @@ dependencies:
 
   cupertino_icons: ^1.0.8
 
-  demo_system_design:
+  verse_ds:
     git:
       url: https://github.com/Pizzars/demo_system_design.git
       ref: main
+  dio: ^5.9.0
+  bloc: ^9.2.0
 
 dev_dependencies:
   flutter_test:
@@ -31,7 +32,6 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-
 
   # assets:
   #   - images/a_dot_burr.jpeg
