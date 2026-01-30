@@ -1,8 +1,12 @@
 import 'package:commons/commons.dart';
+import '../../domain/entities/subtopic_entity.dart';
+import '../mappers/subtopic_mapper.dart';
+import '../mappers/topics_mapper.dart';
 import '../models/topic_model.dart';
 
 abstract class TopicsRemoteDataSource {
   Future<Result<List<TopicModel>>> getTopics();
+  Future<Result<List<SubtopicEntity>>> getSubtopics(String id);
 }
 
 class TopicsRemoteDataSourceImpl implements TopicsRemoteDataSource {
@@ -15,22 +19,20 @@ class TopicsRemoteDataSourceImpl implements TopicsRemoteDataSource {
     final result = await _client.get('/topics');
 
     return switch (result) {
-      Success(data: final response) => _mapResponse(response),
+      Success(data: final response) => TopicsMapper.mapper(response),
       Failure(error: final error) => Failure(error),
     };
   }
 
-  Result<List<TopicModel>> _mapResponse(response) {
-    try {
-      final List<dynamic> data = response.data; // List root in JSON
+  @override
+  Future<Result<List<SubtopicEntity>>> getSubtopics(String id) async {
+    final result = await _client.post('/subtopics', data: {
+      "topicId": id,
+    });
 
-      final topics = data
-          .map((json) => TopicModel.fromJson(json as Map<String, dynamic>))
-          .toList();
-
-      return Success(topics);
-    } catch (e) {
-      return Failure(const UnknownError('Error al parsear topics'));
-    }
+    return switch (result) {
+      Success(data: final response) => SubtopicMapper.mapper(response),
+      Failure(error: final error) => Failure(error),
+    };
   }
 }
