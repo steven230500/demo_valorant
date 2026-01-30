@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/injectors/injector.dart';
 import '../bloc/topics_bloc/topics_bloc.dart';
 import '../widgets/topic_accordion_widget.dart';
@@ -9,9 +10,7 @@ class TopicsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery
-        .of(context)
-        .size;
+    final size = MediaQuery.of(context).size;
     final double width = size.width;
     final double paddingHorizontal = (width * 0.5) / 2;
 
@@ -38,7 +37,15 @@ class TopicsPage extends StatelessWidget {
                       key: ValueKey(topic.id),
                       topic: topic,
                       onTapInEmpty: () {},
-                      onSubtopic: (value) {},
+                      onSubtopic: (value) {
+                        context.pushNamed(
+                          'subtopicDetail',
+                          pathParameters: {
+                            'topicId': topic.id,
+                            'subtopicId': value.id,
+                          },
+                        );
+                      },
                     );
                   },
                 ),
