@@ -14,8 +14,8 @@ class SplashPage extends StatelessWidget {
       child: BlocListener<SplashBloc, SplashState>(
         listener: (context, state) {
           if (state is SplashSuccess) {
-            // NavigationHelper.goToAndReplace(context, AppRouter.selection.path);
-            NavigationHelper.goToAndReplace(context, AppRouter.create.path);
+            NavigationHelper.goToAndReplace(context, AppRouter.selection.path);
+            // NavigationHelper.goToAndReplace(context, AppRouter.create.path);
           }
         },
         child: Scaffold(

@@ -1,13 +1,18 @@
 import 'package:commons/commons.dart';
+import 'package:demo_valorant/features/create/data/models/topic_model.dart';
 import '../entities/content_block_entity.dart';
-import '../repositories/topics_repository.dart';
+import '../repositories/form_repository.dart';
 
-class GetTopicsUseCase {
-  final TopicsRepository repository;
+class GetDetailSubtopicUseCase {
+  final FormRepository repository;
 
-  GetTopicsUseCase(this.repository);
+  GetDetailSubtopicUseCase(this.repository);
 
-  Future<Result<List<ContentBlockEntity>>> call() async {
-    return await repository.getTopics();
+  Future<Result<List<ContentBlockEntity>>> call(String topic, String subtopic) async {
+    return await repository.getDetailSubtopic(topic, subtopic);
+  }
+
+  Future<Result<bool>> update(String topic, String subtopic, List<ContentBlockModel> blocks) async {
+    return await repository.updateDetail(topic, subtopic, blocks);
   }
 }

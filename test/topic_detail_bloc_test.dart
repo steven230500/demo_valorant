@@ -1,4 +1,5 @@
 import 'package:commons/commons.dart';
+import 'package:demo_valorant/features/topics/domain/entities/subtopic_entity.dart';
 import 'package:demo_valorant/features/topics/domain/entities/topic_detail_entity.dart';
 import 'package:demo_valorant/features/topics/domain/entities/topic_entity.dart';
 import 'package:demo_valorant/features/topics/domain/repositories/topics_repository.dart';
@@ -26,6 +27,12 @@ class MockTopicsRepository implements TopicsRepository {
         gallery: [],
       ),
     );
+  }
+
+  @override
+  Future<Result<List<SubtopicEntity>>> getSubtopics(String id) {
+    // TODO: implement getSubtopics
+    throw UnimplementedError();
   }
 }
 

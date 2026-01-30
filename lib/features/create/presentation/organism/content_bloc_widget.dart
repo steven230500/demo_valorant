@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -29,15 +30,15 @@ class _ContentBlockEditorState extends State<ContentBlockEditor> {
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController(text: widget.block.value);
+    _controller = TextEditingController(text: widget.block.content);
   }
 
   @override
   void didUpdateWidget(covariant ContentBlockEditor oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (oldWidget.block.value != widget.block.value) {
-      _controller.text = widget.block.value;
+    if (oldWidget.block.content != widget.block.content) {
+      _controller.text = widget.block.content;
     }
   }
 
@@ -53,8 +54,10 @@ class _ContentBlockEditorState extends State<ContentBlockEditor> {
     if (file != null) {
       widget.onChanged(
         ContentBlockModel(
+          id: '',
+          order: 0,
           type: ContentBlockType.image,
-          value: file.path,
+          content: file.path,
         ),
       );
     }
@@ -86,7 +89,9 @@ class _ContentBlockEditorState extends State<ContentBlockEditor> {
                   widget.onChanged(
                     ContentBlockModel(
                       type: newType,
-                      value: '',
+                      content: '',
+                      id: '',
+                      order: 0,
                     ),
                   );
                 }
@@ -120,7 +125,7 @@ class _ContentBlockEditorState extends State<ContentBlockEditor> {
       case ContentBlockType.subtitle:
       case ContentBlockType.paragraph:
       case ContentBlockType.code:
-      case ContentBlockType.video:
+      case ContentBlockType.url:
         return TextFormField(
           controller: _controller,
           maxLines: null,
@@ -132,7 +137,9 @@ class _ContentBlockEditorState extends State<ContentBlockEditor> {
             widget.onChanged(
               ContentBlockModel(
                 type: widget.block.type,
-                value: value,
+                content: value,
+                id: '',
+                order: 0,
               ),
             );
           },
@@ -148,11 +155,15 @@ class _ContentBlockEditorState extends State<ContentBlockEditor> {
               label: const Text('Seleccionar imagen'),
             ),
             const SizedBox(height: 10),
-            if (widget.block.value.isNotEmpty)
+            if (widget.block.content.isNotEmpty)
               ClipRRect(
                 borderRadius: BorderRadius.circular(8),
-                child: Image.file(
-                  File(widget.block.value),
+                child: kIsWeb ? Image.network(
+                  widget.block.content,
+                  height: 180,
+                  fit: BoxFit.cover,
+                ) : Image.file(
+                  File(widget.block.content),
                   height: 180,
                   fit: BoxFit.cover,
                 ),
@@ -172,7 +183,7 @@ class _ContentBlockEditorState extends State<ContentBlockEditor> {
         return 'Párrafo';
       case ContentBlockType.code:
         return 'Código';
-      case ContentBlockType.video:
+      case ContentBlockType.url:
         return 'URL del video';
       case ContentBlockType.image:
         return 'Imagen';

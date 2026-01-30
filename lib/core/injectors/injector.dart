@@ -8,8 +8,6 @@ final GetIt getIt = GetIt.instance;
 
 void initDependencies() {
   homeInjector(getIt);
-
   topicsInjector(getIt);
-
   routerInjector(getIt);
 }
