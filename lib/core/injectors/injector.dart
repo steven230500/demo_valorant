@@ -8,10 +8,10 @@ import 'package:demo_valorant/features/auth/authentication/injectors/authenticat
 
 final GetIt getIt = GetIt.instance;
 
-void initDependencies() {
+Future<void> initDependencies() async{
   homeInjector(getIt);
 
-  topicsInjector(getIt);
+  await topicsInjector(getIt);
 
   authenticationInjector(getIt);
 
