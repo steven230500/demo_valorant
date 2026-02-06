@@ -1,17 +1,59 @@
-
-import 'package:commons/router/navigation_helper.dart';
+import 'package:demo_valorant/firebase_login_functions.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../../core/router/app_router.dart';
+// import 'package:commons/router/navigation_helper.dart';
+// import '../../../../../core/router/app_router.dart';
 
-class AuthenticationPage extends StatefulWidget {
+class AuthenticationPage extends StatelessWidget {
   const AuthenticationPage({super.key});
 
   @override
-  State<AuthenticationPage> createState() => _AuthenticationPageState();
+  Widget build(BuildContext context) {
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+
+        if(snapshot.hasData){
+          return Scaffold(
+            appBar: AppBar(title: const Text('Selecciona una opción')),
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text("Estás autenticado :D"),
+                  SizedBox(height: 16,),
+                  TextButton(
+                    style: TextButton.styleFrom(
+                        backgroundColor: Colors.blue.shade100
+                    ),
+                    onPressed: () async {
+                      await AuthService().signOut();
+                    },
+                    child: Text("Cerrar sesión"),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+
+        return const AuthenticationPageContainer();
+      },
+    );
+  }
 }
 
-class _AuthenticationPageState extends State<AuthenticationPage> {
+
+class AuthenticationPageContainer extends StatefulWidget {
+  const AuthenticationPageContainer({super.key});
+
+  @override
+  State<AuthenticationPageContainer> createState() => _AuthenticationPageContainerState();
+}
+
+class _AuthenticationPageContainerState extends State<AuthenticationPageContainer> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -69,9 +111,14 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
               ),
               const SizedBox(height: 24),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (_formKey.currentState!.validate()) {
-                    NavigationHelper.goToAndReplace(context, AppRouter.selection.path);
+
+                    final userData = await AuthService().signInWithEmail(_emailController.text, _passwordController.text);
+                    if(userData?.user != null) {
+                      // Descomentar abajo para ir a la ruta de selección
+                      //NavigationHelper.goToAndReplace(context, AppRouter.selection.path);
+                    }
                   }
                 },
                 child: const Text('Login'),
