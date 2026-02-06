@@ -12,7 +12,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  await initDependencies();
+  initDependencies();
   debugPrint('Running in ${EnvConfig.debugMode ? 'DEBUG' : 'RELEASE'} mode');
   debugPrint('App Title: ${EnvConfig.appTitle}');
   debugPrint('API URL: ${EnvConfig.apiUrl}');

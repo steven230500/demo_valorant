@@ -7,7 +7,6 @@ import 'package:demo_valorant/features/create/presentation/bloc/form/form_bloc.d
 import 'package:demo_valorant/features/topics/domain/use_cases/get_subtopics_use_case.dart';
 import 'package:demo_valorant/features/topics/presentation/bloc/subtopics_bloc/subtopics_bloc.dart';
 import 'package:demo_valorant/features/topics/presentation/bloc/subtopic_detail_bloc.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
 
 import '../data/datasources/topics_datasource.dart';
@@ -16,11 +15,10 @@ import '../domain/repositories/topics_repository.dart';
 import '../domain/use_cases/get_topics_use_case.dart';
 import '../presentation/bloc/topics_bloc/topics_bloc.dart';
 
-Future<void> topicsInjector(GetIt getIt) async {
-  final token = await FirebaseAuth.instance.currentUser?.getIdToken();
+void topicsInjector(GetIt getIt) {
 
   getIt.registerLazySingleton<BaseClient>(
-        () => BaseClient(token: token),
+        () => BaseClient(),
     instanceName: 'commonsClient',
   );
 

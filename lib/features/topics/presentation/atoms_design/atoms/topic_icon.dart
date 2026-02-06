@@ -8,9 +8,10 @@ class TopicIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String secureUrl = kIsWeb
-        ? "https://corsproxy.io/?${Uri.encodeComponent(url)}"
-        : url;
+    // final String secureUrl = kIsWeb
+    //     ? "https://corsproxy.io/?${Uri.encodeComponent(url)}"
+    //     : url;
+    final String secureUrl = url;
 
     return Image.network(
       secureUrl,
