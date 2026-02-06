@@ -1,5 +1,7 @@
 import 'package:commons/commons.dart';
 import 'package:demo_valorant/core/router/app_router.dart';
+import 'package:demo_valorant/firebase_login_functions.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class SelectionPage extends StatelessWidget {
@@ -7,32 +9,76 @@ class SelectionPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Selecciona una opción')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _SelectionCard(
-              title: 'Valorant',
-              icon: Icons.gamepad,
-              color: Colors.redAccent,
-              onTap: () =>
-                  NavigationHelper.pushTo(context, AppRouter.home.path),
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return Scaffold(
+            appBar: AppBar(title: const Text('Selecciona una opción')),
+            body: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _SelectionCard(
+                    title: 'Valorant',
+                    icon: Icons.gamepad,
+                    color: Colors.redAccent,
+                    onTap: () =>
+                        NavigationHelper.pushTo(context, AppRouter.home.path),
+                  ),
+                  const SizedBox(height: 20),
+                  _SelectionCard(
+                    title: 'Topics',
+                    icon: Icons.topic,
+                    color: Colors.blueAccent,
+                    onTap: () =>
+                        NavigationHelper.pushTo(context, AppRouter.topics.path),
+                  ),
+                  SizedBox(
+                    height: 32,
+                  ),
+                  TextButton(
+                    style: TextButton.styleFrom(
+                        backgroundColor: Colors.blue.shade100
+                    ),
+                    onPressed: () async {
+                      await AuthService().signOut();
+                    },
+                    child: Text("Cerrar sesión D:"),
+                  ),
+                  SizedBox(
+                    height: 32,
+                  ),
+                ],
+              ),
             ),
-            const SizedBox(height: 20),
-            _SelectionCard(
-              title: 'Topics',
-              icon: Icons.topic,
-              color: Colors.blueAccent,
-              onTap: () =>
-                  NavigationHelper.pushTo(context, AppRouter.topics.path),
+          );
+        }
+        return Scaffold(
+          appBar: AppBar(title: const Text('Selecciona una opción')),
+          body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text("Iniciar Sesión"),
+                SizedBox(height: 16,),
+                TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.blue.shade100
+                  ),
+                  onPressed: () async {
+                    await AuthService().signInWithEmail("jyjdajj@gmail.com", "1234567890");
+                  },
+                  child: Text("Probar login :D"),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      }
     );
   }
 }
@@ -64,7 +110,7 @@ class _SelectionCard extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
             gradient: LinearGradient(
-              colors: [color.withOpacity(0.8), color],
+              colors: [color.withAlpha(204), color],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
