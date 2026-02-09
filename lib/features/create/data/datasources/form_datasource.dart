@@ -44,7 +44,8 @@ class FormRemoteDataSourceImpl implements FormRemoteDataSource {
   Future<Result<List<ContentBlockModel>>> getDetailSubtopic(String topic, String subtopic) async {
     final result = await _client.post('/subtopic-detail', data: {
       "topicId": topic,
-      "subtopicId": subtopic
+      "subtopicId": subtopic,
+      "isAdmin": true
     });
 
     return switch (result) {

@@ -40,7 +40,7 @@ class CreatePage extends StatelessWidget {
             ),
             body: state is FormCreateError ?
                 Center(
-                  child: Text("Ha ocurrido un error con la solicitud, intente más tarde.", style: TextStyle(color: Colors.red),),
+                  child: Text(state.message, style: TextStyle(color: Colors.red),),
                 )
                 :
                 Center(

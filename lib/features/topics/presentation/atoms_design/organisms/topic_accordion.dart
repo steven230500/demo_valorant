@@ -166,7 +166,16 @@ class _TopicAccordionState extends State<TopicAccordion>
                   topicId: widget.topic.id,
                 ),
               ),
-              child: SubtopicItem(subtopic: widget.subtopics[index]),
+              child: SubtopicItem(
+                subtopic: widget.subtopics[index],
+                // onTap: () => context.goNamed(
+                //   'create',
+                //   extra: {
+                //     'topic': widget.topic,
+                //     'subtopic': widget.subtopics[index],
+                //   },
+                // ), // Se debe descomentar este onTap para acceder al formulario de edición de subtema
+              ),
             ),
           ),
         ),
