@@ -33,6 +33,9 @@ dependencies:
   url_launcher: ^6.3.2
   image_picker: ^1.2.1
 
+dependency_overrides:
+  google_fonts: ^8.0.1
+
 
 dev_dependencies:
   flutter_test:
