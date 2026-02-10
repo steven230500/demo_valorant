@@ -16,8 +16,6 @@ class SubtopicDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-
     return BlocProvider(
       create: (context) => GetIt.I<SubtopicDetailBloc>()
         ..add(
@@ -27,8 +25,6 @@ class SubtopicDetailPage extends StatelessWidget {
           ),
         ),
       child: CustomScaffold(
-        webMaxHeight: size.height,
-        webMaxWidth: 1200,
         headerTitle: subtopic.name,
         body: BlocBuilder<SubtopicDetailBloc, SubtopicDetailState>(
           builder: (context, state) {

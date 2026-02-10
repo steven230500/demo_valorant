@@ -75,105 +75,110 @@ class _AuthenticationPageContainerState
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
+      webMaxWidth: 450,
+      webMaxHeight: 550,
+      showArrowBack: false,
       body: Form(
         key: _formKey,
-        child: Padding(
-          padding: EdgeInsets.only(top: isMobile(context) ? 200 : 0),
-          child: Column(
-            mainAxisAlignment: isMobile(context) ? MainAxisAlignment
-                .start : MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Icon(
-                Icons.library_books_rounded,
-                size: 80,
-                color: Colors.blueAccent,
-              ),
-              const SizedBox(height: 24),
-              Text(
-                'Bienvenido de Nuevo',
-                textAlign: TextAlign.center,
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .headlineSmall
-                    ?.copyWith(
-                  fontWeight: FontWeight.bold,
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.only(top: isMobile(context) ? 200 : 0),
+            child: Column(
+              mainAxisAlignment: isMobile(context) ? MainAxisAlignment
+                  .start : MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Icon(
+                  Icons.library_books_rounded,
+                  size: 80,
+                  color: Colors.blueAccent,
                 ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Inicia sesión para continuar',
-                textAlign: TextAlign.center,
-                style: Theme
-                    .of(
-                  context,
-                )
-                    .textTheme
-                    .bodyMedium
-                    ?.copyWith(color: Colors.grey[600]),
-              ),
-              const SizedBox(height: 32),
-              TextFormField(
-                controller: _emailController,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Campo requerido*';
-                  }
-                  if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                    return 'Correo invalido*';
-                  }
-                  return null;
-                },
-                decoration: const InputDecoration(
-                  labelText: 'Correo Electrónico',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.email_outlined),
-                ),
-                keyboardType: TextInputType.emailAddress,
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _passwordController,
-                obscureText: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Campo requerido*';
-                  }
-                  if (value.length < 6) {
-                    return 'Minimo 6 caracteres';
-                  }
-                  return null;
-                },
-                decoration: const InputDecoration(
-                  labelText: 'Contraseña',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.lock_outline),
-                ),
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  backgroundColor: Colors.blueAccent,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+                const SizedBox(height: 24),
+                Text(
+                  'Bienvenido de Nuevo',
+                  textAlign: TextAlign.center,
+                  style: Theme
+                      .of(context)
+                      .textTheme
+                      .headlineSmall
+                      ?.copyWith(
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    context.read<AuthenticationBloc>().add(
-                      AuthenticationLoginRequested(
-                        email: _emailController.text,
-                        password: _passwordController.text,
-                      ),
-                    );
-                  }
-                },
-                child: const Text('INICIAR SESIÓN'),
-              ),
-            ],
+                const SizedBox(height: 8),
+                Text(
+                  'Inicia sesión para continuar',
+                  textAlign: TextAlign.center,
+                  style: Theme
+                      .of(
+                    context,
+                  )
+                      .textTheme
+                      .bodyMedium
+                      ?.copyWith(color: Colors.grey[600]),
+                ),
+                const SizedBox(height: 32),
+                TextFormField(
+                  controller: _emailController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Campo requerido*';
+                    }
+                    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                      return 'Correo invalido*';
+                    }
+                    return null;
+                  },
+                  decoration: const InputDecoration(
+                    labelText: 'Correo Electrónico',
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.email_outlined),
+                  ),
+                  keyboardType: TextInputType.emailAddress,
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _passwordController,
+                  obscureText: true,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Campo requerido*';
+                    }
+                    if (value.length < 6) {
+                      return 'Minimo 6 caracteres';
+                    }
+                    return null;
+                  },
+                  decoration: const InputDecoration(
+                    labelText: 'Contraseña',
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.lock_outline),
+                  ),
+                ),
+                const SizedBox(height: 24),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    backgroundColor: Colors.blueAccent,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      context.read<AuthenticationBloc>().add(
+                        AuthenticationLoginRequested(
+                          email: _emailController.text,
+                          password: _passwordController.text,
+                        ),
+                      );
+                    }
+                  },
+                  child: const Text('INICIAR SESIÓN'),
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -12,6 +12,7 @@ class CustomScaffold extends StatelessWidget {
   final IconData? headerIcon;
   final Color? headerColorIcon;
   final MainAxisAlignment? headerMainAxisAlignment;
+  final bool showArrowBack;
 
   const CustomScaffold({
     super.key,
@@ -24,6 +25,7 @@ class CustomScaffold extends StatelessWidget {
     this.headerIcon,
     this.headerColorIcon,
     this.headerMainAxisAlignment,
+    this.showArrowBack = true,
   });
 
   @override
@@ -32,6 +34,8 @@ class CustomScaffold extends StatelessWidget {
   }
 
   Widget _buildWeb(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     return Scaffold(
       backgroundColor: Colors.grey[200],
       body: Padding(
@@ -39,8 +43,8 @@ class CustomScaffold extends StatelessWidget {
         child: Center(
           child: ConstrainedBox(
             constraints: BoxConstraints(
-              maxWidth: webMaxWidth ?? 450,
-              maxHeight: webMaxHeight ?? 550,
+              maxWidth: webMaxWidth ?? 1200,
+              maxHeight: webMaxHeight ?? size.height,
             ),
             child: Card(
               elevation: 8.0,
@@ -63,22 +67,22 @@ class CustomScaffold extends StatelessWidget {
                         Flexible(
                           child: Row(
                             children: [
-                              headerIcon != null
-                                  ? Icon(
-                                      headerIcon ?? Icons.my_library_books,
-                                      color:
-                                          headerColorIcon ?? Colors.blueAccent,
-                                      size: 40,
-                                    )
-                                  : IconButton(
-                                      icon: Icon(
-                                        Icons.arrow_back,
-                                        color: Colors.black,
-                                      ),
-                                      onPressed: () {
-                                        NavigationHelper.goBack(context);
-                                      },
-                                    ),
+                              if (headerIcon != null)
+                                Icon(
+                                  headerIcon ?? Icons.my_library_books,
+                                  color: headerColorIcon ?? Colors.blueAccent,
+                                  size: 40,
+                                ),
+                              if (showArrowBack)
+                                IconButton(
+                                  icon: Icon(
+                                    Icons.arrow_back,
+                                    color: Colors.black,
+                                  ),
+                                  onPressed: () {
+                                    NavigationHelper.goBack(context);
+                                  },
+                                ),
                               SizedBox(width: 10),
                               if (headerTitle != null)
                                 Flexible(

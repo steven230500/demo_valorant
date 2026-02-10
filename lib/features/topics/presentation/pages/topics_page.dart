@@ -15,13 +15,9 @@ class TopicsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-
     return BlocProvider(
       create: (_) => getIt<TopicsBloc>()..add(GetTopicsEvent()),
       child: CustomScaffold(
-        webMaxHeight: size.height,
-        webMaxWidth: 1200,
         headerOnLogout: () async{
             await AuthService().signOut();
             if (context.mounted) {
@@ -34,6 +30,7 @@ class TopicsPage extends StatelessWidget {
         headerIcon:  Icons.my_library_books,
         headerColorIcon: Colors.blueAccent,
         headerTitle: 'Documentación',
+        showArrowBack: false,
         body: BlocBuilder<TopicsBloc, TopicsState>(
           builder: (context, state) {
             if (state is TopicsLoading) {
