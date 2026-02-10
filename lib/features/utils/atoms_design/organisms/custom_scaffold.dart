@@ -13,6 +13,7 @@ class CustomScaffold extends StatelessWidget {
   final Color? headerColorIcon;
   final MainAxisAlignment? headerMainAxisAlignment;
   final bool showArrowBack;
+  final Widget? floatingActionButton;
 
   const CustomScaffold({
     super.key,
@@ -26,6 +27,7 @@ class CustomScaffold extends StatelessWidget {
     this.headerColorIcon,
     this.headerMainAxisAlignment,
     this.showArrowBack = true,
+    this.floatingActionButton,
   });
 
   @override
@@ -38,6 +40,7 @@ class CustomScaffold extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Colors.grey[200],
+      floatingActionButton: floatingActionButton,
       body: Padding(
         padding: const EdgeInsets.all(40.0),
         child: Center(
