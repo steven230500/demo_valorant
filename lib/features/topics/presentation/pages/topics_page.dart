@@ -1,8 +1,13 @@
+import 'package:commons/router/navigation_helper.dart';
+import 'package:demo_valorant/features/utils/atoms_design/organisms/custom_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/injectors/injector.dart';
+import '../../../../core/router/app_router.dart';
+import '../../../../firebase_login_functions.dart';
 import '../bloc/topics_bloc/topics_bloc.dart';
+import '../topics_router/topics_router.dart';
 import '../widgets/topic_accordion_widget.dart';
 
 class TopicsPage extends StatelessWidget {
@@ -11,13 +16,24 @@ class TopicsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final double width = size.width;
-    final double paddingHorizontal = (width * 0.5) / 2;
 
     return BlocProvider(
       create: (_) => getIt<TopicsBloc>()..add(GetTopicsEvent()),
-      child: Scaffold(
-        appBar: AppBar(title: const Text('Topics')),
+      child: CustomScaffold(
+        webMaxHeight: size.height,
+        webMaxWidth: 1200,
+        headerOnLogout: () async{
+            await AuthService().signOut();
+            if (context.mounted) {
+              NavigationHelper.goToAndReplace(
+                context,
+                AppRouter.login.path,
+              );
+            }
+        },
+        headerIcon:  Icons.my_library_books,
+        headerColorIcon: Colors.blueAccent,
+        headerTitle: 'Documentación',
         body: BlocBuilder<TopicsBloc, TopicsState>(
           builder: (context, state) {
             if (state is TopicsLoading) {
@@ -25,30 +41,30 @@ class TopicsPage extends StatelessWidget {
             } else if (state is TopicsError) {
               return Center(child: Text('Error: ${state.message}'));
             } else if (state is TopicsLoaded) {
-              return Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: width < 600 ? 16 : paddingHorizontal,
-                ),
-                child: ListView.builder(
-                  itemCount: state.topics.length,
-                  itemBuilder: (context, index) {
-                    final topic = state.topics[index];
-                    return TopicAccordionWidget(
-                      key: ValueKey(topic.id),
-                      topic: topic,
-                      onTapInEmpty: () {},
-                      onSubtopic: (value) {
-                        context.pushNamed(
-                          'subtopicDetail',
-                          pathParameters: {
-                            'topicId': topic.id,
-                            'subtopicId': value.id,
+              return Column(
+                children: [
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: state.topics.length,
+                      itemBuilder: (context, index) {
+                        final topic = state.topics[index];
+                        return TopicAccordionWidget(
+                          key: ValueKey(topic.id),
+                          topic: topic,
+                          onTapInEmpty: () {},
+                          onSubtopic: (subtopic) {
+                            context.pushNamed(
+                              TopicsRouter.subtopicDetail.name,
+                              extra: {
+                                'subtopic': subtopic
+                              },
+                            );
                           },
                         );
                       },
-                    );
-                  },
-                ),
+                    ),
+                  ),
+                ],
               );
             }
             return const Center(child: Text('No topics loaded'));

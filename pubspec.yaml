@@ -16,9 +16,9 @@ dependencies:
   flutter_bloc: ^9.1.1
   firebase_core: ^3.0.0
   firebase_auth: ^5.0.0
-
+  google_fonts: ^8.0.1
   cupertino_icons: ^1.0.8
-
+  dart_code_viewer2: ^1.0.3
   verse_ds:
     git:
       url: https://github.com/Pizzars/demo_system_design.git
