@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 import '../../domain/entities/subtopic_detail_entity.dart';
 import '../bloc/subtopic_detail_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../widgets/code_block_widget.dart';
 
 class SubtopicDetailPage extends StatelessWidget {
   final String topicId;
@@ -88,18 +89,7 @@ class SubtopicDetailPage extends StatelessWidget {
       case SubtopicDetailType.code:
         return Padding(
           padding: const EdgeInsets.only(bottom: 16.0),
-          child: Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(12.0),
-            decoration: BoxDecoration(
-              color: Colors.grey[200],
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-            child: Text(
-              entity.content,
-              style: const TextStyle(fontFamily: 'Courier', fontSize: 14),
-            ),
-          ),
+          child: CodeBlockWidget(code: entity.content),
         );
       case SubtopicDetailType.url:
         return Padding(

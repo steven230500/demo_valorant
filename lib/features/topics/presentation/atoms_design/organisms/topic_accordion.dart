@@ -12,6 +12,8 @@ class TopicAccordion extends StatefulWidget {
   final VoidCallback? onTap;
   final bool shouldExpand;
   final ValueChanged<SubtopicEntity>? onSubtopic;
+  final VoidCallback? onEditTopic;
+  final VoidCallback? onAddSubtopic;
 
   const TopicAccordion({
     super.key,
@@ -22,6 +24,8 @@ class TopicAccordion extends StatefulWidget {
     this.errorMessage,
     this.shouldExpand = false,
     this.onSubtopic,
+    this.onEditTopic,
+    this.onAddSubtopic,
   });
 
   @override
@@ -109,6 +113,19 @@ class _TopicAccordionState extends State<TopicAccordion>
                         ),
                       ),
                     ),
+                    if (widget.onEditTopic != null)
+                      IconButton(
+                        icon: const Icon(
+                          Icons.edit,
+                          size: 20,
+                          color: Colors.grey,
+                        ),
+                        onPressed: widget.onEditTopic,
+                        splashRadius: 20,
+                        constraints: const BoxConstraints(),
+                        padding: EdgeInsets.zero,
+                      ),
+                    const SizedBox(width: 8),
                     _buildTrailingIcon(),
                   ],
                 ),
@@ -151,47 +168,52 @@ class _TopicAccordionState extends State<TopicAccordion>
   }
 
   Widget _buildExpandedContent() {
-    if (widget.subtopics.isNotEmpty) {
-      return Padding(
-        padding: const EdgeInsets.only(left: 16, top: 0, right: 16, bottom: 16),
-        child: Column(
-          children: List.generate(
-            widget.subtopics.length,
-                (index) => GestureDetector(
-              onTap: () => widget.onSubtopic?.call(
-                SubtopicEntity(
-                  id: widget.subtopics[index].id,
-                  name: widget.subtopics[index].name,
-                  icon: widget.subtopics[index].icon,
-                  topicId: widget.topic.id,
+    return Padding(
+      padding: const EdgeInsets.only(left: 16, top: 0, right: 16, bottom: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (widget.subtopics.isNotEmpty)
+            ...List.generate(
+              widget.subtopics.length,
+              (index) => GestureDetector(
+                onTap: () => widget.onSubtopic?.call(
+                  SubtopicEntity(
+                    id: widget.subtopics[index].id,
+                    name: widget.subtopics[index].name,
+                    icon: widget.subtopics[index].icon,
+                    topicId: widget.topic.id,
+                  ),
                 ),
-              ),
-              child: SubtopicItem(
-                subtopic: widget.subtopics[index],
-                // onTap: () => context.goNamed(
-                //   'create',
-                //   extra: {
-                //     'topic': widget.topic,
-                //     'subtopic': widget.subtopics[index],
-                //   },
-                // ), // Se debe descomentar este onTap para acceder al formulario de edición de subtema
+                child: SubtopicItem(subtopic: widget.subtopics[index]),
               ),
             ),
-          ),
-        ),
-      );
-    }
 
-    if (widget.errorMessage != null) {
-      return Padding(
-        padding: const EdgeInsets.only(left: 16, top: 0, right: 16, bottom: 16),
-        child: Text(
-          'Error: ${widget.errorMessage}',
-          style: const TextStyle(color: Colors.red),
-        ),
-      );
-    }
+          if (widget.subtopics.isEmpty && widget.errorMessage != null)
+            Text(
+              'Error: ${widget.errorMessage}',
+              style: const TextStyle(color: Colors.red),
+            ),
 
-    return const SizedBox.shrink();
+          if (widget.onAddSubtopic != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: TextButton.icon(
+                onPressed: widget.onAddSubtopic,
+                icon: const Icon(Icons.add, size: 20),
+                label: const Text('Agregar Subtema'),
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.blue,
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  backgroundColor: Colors.blue.withOpacity(0.05),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
   }
 }

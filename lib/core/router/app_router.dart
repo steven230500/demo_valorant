@@ -2,6 +2,7 @@ import 'package:commons/commons.dart';
 import 'package:demo_valorant/features/auth/authentication/presentation/pages/authentication_page.dart';
 import 'package:demo_valorant/features/auth/authentication/presentation/routers/authentication_router.dart';
 import 'package:demo_valorant/features/create/presentation/pages/create_page.dart';
+import 'package:demo_valorant/features/create/presentation/pages/topic_form_page.dart';
 import 'package:demo_valorant/features/home/presentation/pages/home_page.dart';
 import 'package:demo_valorant/features/selection/presentation/pages/selection_page.dart';
 import 'package:demo_valorant/features/splash/presentation/pages/splash_page.dart';
@@ -22,6 +23,10 @@ class AppRouter implements BaseRoutes {
     path: '/topics/:id',
   );
   static RouteName login = AuthenticationRouter.login;
+  static RouteName topicForm = RouteName(
+    name: 'topicForm',
+    path: '/topic-form',
+  );
 
   @override
   List<RouteBase> get routes => [
@@ -58,6 +63,20 @@ class AppRouter implements BaseRoutes {
       },
     ),
 
+    GoRoute(
+      path: topicForm.path,
+      name: topicForm.name,
+      builder: (context, state) {
+        final data = state.extra as Map<String, dynamic>? ?? {};
+        return TopicFormPage(
+          topicId: data['topicId'],
+          subtopicId: data['subtopicId'],
+          initialName: data['initialName'],
+          initialIcon: data['initialIcon'],
+          isSubtopic: data['isSubtopic'] ?? false,
+        );
+      },
+    ),
     ...TopicsRouter().routes,
   ];
 }
