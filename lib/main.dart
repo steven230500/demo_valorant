@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'Demo Valorant',
-      theme: VerseTheme.lightTheme,
+      theme: VerseTheme.demoTheme,
       routerConfig: getIt<GoRouter>(),
     );
   }

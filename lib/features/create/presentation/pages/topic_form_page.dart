@@ -1,4 +1,5 @@
 import 'package:commons/router/navigation_helper.dart';
+import 'package:demo_valorant/features/utils/atoms_design/organisms/custom_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/injectors/injector.dart';
@@ -122,8 +123,8 @@ class _TopicFormViewState extends State<_TopicFormView> {
         ? (widget.subtopicId != null ? 'Editar Subtema' : 'Crear Subtema')
         : (widget.topicId != null ? 'Editar Tema' : 'Crear Tema');
 
-    return Scaffold(
-      appBar: AppBar(title: Text(title)),
+    return CustomScaffold(
+      headerTitle: title,
       body: BlocConsumer<TopicFormBloc, TopicFormState>(
         listener: (context, state) {
           if (state is TopicFormSuccess) {

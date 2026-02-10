@@ -27,8 +27,8 @@ class SplashPage extends StatelessWidget {
                 return Transform.scale(
                   scale: value,
                   child: Icon(
-                    Icons.shield,
-                    size: 120,
+                    Icons.library_books_sharp,
+                    size: 140,
                     color: Colors.blueAccent,
                   ),
                 );

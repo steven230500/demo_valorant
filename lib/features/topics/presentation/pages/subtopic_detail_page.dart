@@ -1,28 +1,31 @@
+import 'package:dart_code_viewer2/dart_code_viewer2.dart';
+import 'package:demo_valorant/features/topics/domain/entities/subtopic_entity.dart';
+import 'package:demo_valorant/features/utils/atoms_design/organisms/custom_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import '../../../utils/helper_demo.dart';
 import '../../domain/entities/subtopic_detail_entity.dart';
 import '../bloc/subtopic_detail_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../widgets/code_block_widget.dart';
 
 class SubtopicDetailPage extends StatelessWidget {
-  final String topicId;
-  final String subtopicId;
+  final SubtopicEntity subtopic;
 
-  const SubtopicDetailPage({
-    super.key,
-    required this.topicId,
-    required this.subtopicId,
-  });
+  const SubtopicDetailPage({super.key, required this.subtopic});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => GetIt.I<SubtopicDetailBloc>()
-        ..add(GetSubtopicDetailEvent(topicId: topicId, subtopicId: subtopicId)),
-      child: Scaffold(
-        appBar: AppBar(title: const Text('Detail')),
+        ..add(
+          GetSubtopicDetailEvent(
+            topicId: subtopic.topicId,
+            subtopicId: subtopic.id,
+          ),
+        ),
+      child: CustomScaffold(
+        headerTitle: subtopic.name,
         body: BlocBuilder<SubtopicDetailBloc, SubtopicDetailState>(
           builder: (context, state) {
             if (state is SubtopicDetailLoading) {
@@ -37,7 +40,12 @@ class SubtopicDetailPage extends StatelessWidget {
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: state.details.map(_buildWidget).toList(),
+                        children: state.details
+                            .map(
+                              (e) =>
+                                  _buildWidget(e, isMobile: isMobile(context)),
+                            )
+                            .toList(),
                       ),
                     ),
                   ),
@@ -51,7 +59,7 @@ class SubtopicDetailPage extends StatelessWidget {
     );
   }
 
-  Widget _buildWidget(SubtopicDetailEntity entity) {
+  Widget _buildWidget(SubtopicDetailEntity entity, {required bool isMobile}) {
     switch (entity.type) {
       case SubtopicDetailType.title:
         return Padding(
@@ -87,9 +95,14 @@ class SubtopicDetailPage extends StatelessWidget {
           ),
         );
       case SubtopicDetailType.code:
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 16.0),
-          child: CodeBlockWidget(code: entity.content),
+        return Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(3),
+            border: Border.all(color: Colors.grey),
+          ),
+          child: DartCodeViewer(
+            entity.content,
+          ),
         );
       case SubtopicDetailType.url:
         return Padding(
