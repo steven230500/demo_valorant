@@ -53,12 +53,12 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyBL67pv_2UFv8iJVHru9KO3oFoMhtD2-Ck',
-    appId: '1:776282366008:web:1ead24dcc963efc1f786cd',
-    messagingSenderId: '776282366008',
-    projectId: 'pruebas-banco-68eb1',
-    authDomain: 'pruebas-banco-68eb1.firebaseapp.com',
-    storageBucket: 'pruebas-banco-68eb1.firebasestorage.app',
-    measurementId: 'G-T7M19PQ86E',
+    apiKey: String.fromEnvironment('FIREBASE_API_KEY'),
+    appId: String.fromEnvironment('FIREBASE_APP_ID'),
+    messagingSenderId: String.fromEnvironment('FIREBASE_MESSAGING_SENDER_ID'),
+    projectId: String.fromEnvironment('FIREBASE_PROJECT_ID'),
+    authDomain: String.fromEnvironment('FIREBASE_AUTH_DOMAIN'),
+    storageBucket: String.fromEnvironment('FIREBASE_STORAGE_BUCKET'),
+    measurementId: String.fromEnvironment('FIREBASE_MEASUREMENT_ID'),
   );
 }

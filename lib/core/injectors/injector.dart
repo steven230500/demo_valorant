@@ -10,10 +10,7 @@ final GetIt getIt = GetIt.instance;
 
 void initDependencies() async{
   homeInjector(getIt);
-
   topicsInjector(getIt);
-
   authenticationInjector(getIt);
-
   routerInjector(getIt);
 }

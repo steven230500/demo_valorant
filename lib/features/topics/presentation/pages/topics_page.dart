@@ -57,6 +57,23 @@ class TopicsPage extends StatelessWidget {
                               },
                             );
                           },
+                          onEditTopic: () {
+                            context.pushNamed(
+                              AppRouter.topicForm.name,
+                              extra: {
+                                'topicId': topic.id,
+                                'initialName': topic.name,
+                                'initialIcon': topic.icon,
+                                'isSubtopic': false,
+                              },
+                            );
+                          },
+                          onAddSubtopic: () {
+                            context.pushNamed(
+                              AppRouter.topicForm.name,
+                              extra: {'topicId': topic.id, 'isSubtopic': true},
+                            );
+                          },
                         );
                       },
                     ),
@@ -66,6 +83,15 @@ class TopicsPage extends StatelessWidget {
             }
             return const Center(child: Text('No topics loaded'));
           },
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            context.pushNamed(
+              AppRouter.topicForm.name,
+              extra: {'isSubtopic': false},
+            );
+          },
+          child: const Icon(Icons.add),
         ),
       ),
     );

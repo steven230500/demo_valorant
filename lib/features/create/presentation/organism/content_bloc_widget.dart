@@ -36,9 +36,10 @@ class _ContentBlockEditorState extends State<ContentBlockEditor> {
   @override
   void didUpdateWidget(covariant ContentBlockEditor oldWidget) {
     super.didUpdateWidget(oldWidget);
-
     if (oldWidget.block.content != widget.block.content) {
-      _controller.text = widget.block.content;
+      if (_controller.text != widget.block.content) {
+        _controller.text = widget.block.content;
+      }
     }
   }
 
@@ -54,8 +55,8 @@ class _ContentBlockEditorState extends State<ContentBlockEditor> {
     if (file != null) {
       widget.onChanged(
         ContentBlockModel(
-          id: '',
-          order: 0,
+          id: widget.block.id,
+          order: widget.block.order,
           type: ContentBlockType.image,
           content: file.path,
         ),
@@ -65,111 +66,252 @@ class _ContentBlockEditorState extends State<ContentBlockEditor> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 10),
-      child: Padding(
-        padding: const EdgeInsets.all(14),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            /// Selector tipo
-            DropdownButtonFormField<ContentBlockType>(
-              initialValue: widget.block.type,
-              decoration: const InputDecoration(
-                labelText: 'Tipo de bloque',
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Header
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade50,
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(16),
               ),
-              items: ContentBlockType.values.map((type) {
-                return DropdownMenuItem(
-                  value: type,
-                  child: Text(type.name),
-                );
-              }).toList(),
-              onChanged: (newType) {
-                if (newType != null) {
-                  widget.onChanged(
-                    ContentBlockModel(
-                      type: newType,
-                      content: '',
-                      id: '',
-                      order: 0,
-                    ),
-                  );
-                }
-              },
+              border: Border(bottom: BorderSide(color: Colors.grey.shade200)),
             ),
-
-            const SizedBox(height: 12),
-
-            /// UI según tipo
-            _buildEditorForType(),
-
-            const SizedBox(height: 12),
-
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton.icon(
-                onPressed: widget.onDelete,
-                icon: const Icon(Icons.delete_outline),
-                label: const Text('Eliminar bloque'),
-              ),
+            child: Row(
+              children: [
+                Icon(
+                  _getIconForType(widget.block.type),
+                  size: 20,
+                  color: Colors.blue.shade700,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  _labelForType(widget.block.type),
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: Colors.grey.shade800,
+                    fontSize: 14,
+                  ),
+                ),
+                const Spacer(),
+                IconButton(
+                  icon: const Icon(Icons.close, size: 20, color: Colors.grey),
+                  onPressed: widget.onDelete,
+                  tooltip: 'Eliminar bloque',
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  splashRadius: 20,
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+          // Content
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: _buildEditorForType(),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildEditorForType() {
+    if (widget.block.type == ContentBlockType.code) {
+      return Container(
+        decoration: BoxDecoration(
+          color: const Color(0xFF1E1E1E),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: TextFormField(
+          controller: _controller,
+          maxLines: null,
+          minLines: 3,
+          style: const TextStyle(
+            fontFamily: 'Courier',
+            color: Color(0xFFD4D4D4),
+            fontSize: 14,
+            height: 1.4,
+          ),
+          decoration: const InputDecoration(
+            hintText: 'Pega o escribe tu código Dart aquí...',
+            hintStyle: TextStyle(color: Color(0xFF555555)),
+            border: InputBorder.none,
+            contentPadding: EdgeInsets.all(16),
+          ),
+          onChanged: (value) => _updateContent(value),
+        ),
+      );
+    }
+
     switch (widget.block.type) {
       case ContentBlockType.title:
       case ContentBlockType.subtitle:
       case ContentBlockType.paragraph:
-      case ContentBlockType.code:
       case ContentBlockType.url:
         return TextFormField(
           controller: _controller,
-          maxLines: null,
-          decoration: InputDecoration(
-            labelText: _labelForType(widget.block.type),
-            border: const OutlineInputBorder(),
+          maxLines: widget.block.type == ContentBlockType.paragraph ? null : 1,
+          minLines: widget.block.type == ContentBlockType.paragraph ? 3 : 1,
+          style: TextStyle(
+            fontSize: widget.block.type == ContentBlockType.title ? 18 : 15,
+            fontWeight:
+                widget.block.type == ContentBlockType.title ||
+                    widget.block.type == ContentBlockType.subtitle
+                ? FontWeight.bold
+                : FontWeight.normal,
           ),
-          onChanged: (value) {
-            widget.onChanged(
-              ContentBlockModel(
-                type: widget.block.type,
-                content: value,
-                id: '',
-                order: 0,
-              ),
-            );
-          },
+          decoration: InputDecoration(
+            hintText:
+                'Ingresa el contenido del ${_labelForType(widget.block.type).toLowerCase()}',
+            filled: true,
+            fillColor: Colors.grey.shade50,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: Colors.grey.shade200),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: Colors.blue.shade200, width: 2),
+            ),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
+            ),
+          ),
+          onChanged: (value) => _updateContent(value),
         );
 
       case ContentBlockType.image:
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ElevatedButton.icon(
-              onPressed: _pickImage,
-              icon: const Icon(Icons.image),
-              label: const Text('Seleccionar imagen'),
-            ),
-            const SizedBox(height: 10),
             if (widget.block.content.isNotEmpty)
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: kIsWeb ? Image.network(
-                  widget.block.content,
-                  height: 180,
-                  fit: BoxFit.cover,
-                ) : Image.file(
-                  File(widget.block.content),
-                  height: 180,
-                  fit: BoxFit.cover,
+              Stack(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: kIsWeb
+                        ? Image.network(
+                            widget.block.content,
+                            height: 200,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => Container(
+                              height: 200,
+                              color: Colors.grey.shade200,
+                              child: const Center(
+                                child: Icon(
+                                  Icons.broken_image,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ),
+                          )
+                        : Image.file(
+                            File(widget.block.content),
+                            height: 200,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          ),
+                  ),
+                  Positioned(
+                    top: 8,
+                    right: 8,
+                    child: CircleAvatar(
+                      backgroundColor: Colors.white,
+                      child: IconButton(
+                        icon: const Icon(Icons.edit, color: Colors.blue),
+                        onPressed: _pickImage,
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            else
+              GestureDetector(
+                onTap: _pickImage,
+                child: Container(
+                  height: 150,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade100,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: Colors.grey.shade300,
+                      style: BorderStyle.solid,
+                    ),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.add_photo_alternate_outlined,
+                        size: 40,
+                        color: Colors.blue.shade400,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Seleccionar imagen',
+                        style: TextStyle(
+                          color: Colors.blue.shade600,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
           ],
         );
+      default:
+        return const SizedBox.shrink();
+    }
+  }
+
+  void _updateContent(String value) {
+    widget.onChanged(
+      ContentBlockModel(
+        type: widget.block.type,
+        content: value,
+        id: widget.block.id,
+        order: widget.block.order,
+      ),
+    );
+  }
+
+  IconData _getIconForType(ContentBlockType type) {
+    switch (type) {
+      case ContentBlockType.title:
+        return Icons.title;
+      case ContentBlockType.subtitle:
+        return Icons.text_fields;
+      case ContentBlockType.paragraph:
+        return Icons.notes;
+      case ContentBlockType.code:
+        return Icons.code;
+      case ContentBlockType.url:
+        return Icons.link;
+      case ContentBlockType.image:
+        return Icons.image;
     }
   }
 
@@ -184,7 +326,7 @@ class _ContentBlockEditorState extends State<ContentBlockEditor> {
       case ContentBlockType.code:
         return 'Código';
       case ContentBlockType.url:
-        return 'URL del video';
+        return 'Enlace';
       case ContentBlockType.image:
         return 'Imagen';
     }

@@ -1,11 +1,16 @@
 import 'package:commons/commons.dart';
 import 'package:demo_valorant/features/auth/authentication/presentation/pages/authentication_page.dart';
 import 'package:demo_valorant/features/auth/authentication/presentation/routers/authentication_router.dart';
+import 'package:demo_valorant/features/create/presentation/pages/create_page.dart';
+import 'package:demo_valorant/features/create/presentation/pages/topic_form_page.dart';
 import 'package:demo_valorant/features/home/presentation/pages/home_page.dart';
 import 'package:demo_valorant/features/selection/presentation/pages/selection_page.dart';
 import 'package:demo_valorant/features/splash/presentation/pages/splash_page.dart';
 import 'package:demo_valorant/features/topics/presentation/topics_router/topics_router.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../features/topics/domain/entities/subtopic_entity.dart';
+import '../../features/topics/domain/entities/topic_entity.dart';
 
 class AppRouter implements BaseRoutes {
   static RouteName splash = RouteName(name: 'splash', path: '/');
@@ -18,6 +23,10 @@ class AppRouter implements BaseRoutes {
     path: '/topics/:id',
   );
   static RouteName login = AuthenticationRouter.login;
+  static RouteName topicForm = RouteName(
+    name: 'topicForm',
+    path: '/topic-form',
+  );
 
   @override
   List<RouteBase> get routes => [
@@ -41,7 +50,33 @@ class AppRouter implements BaseRoutes {
       name: home.name,
       builder: (context, state) => const HomePage(),
     ),
+    GoRoute(
+      path: create.path,
+      name: create.name,
+      builder: (context, state) {
+        final data = state.extra! as Map<String, dynamic>;
 
+        return CreatePage(
+          topic: data['topic'] as TopicEntity,
+          subtopic: data['subtopic'] as SubtopicEntity,
+        );
+      },
+    ),
+
+    GoRoute(
+      path: topicForm.path,
+      name: topicForm.name,
+      builder: (context, state) {
+        final data = state.extra as Map<String, dynamic>? ?? {};
+        return TopicFormPage(
+          topicId: data['topicId'],
+          subtopicId: data['subtopicId'],
+          initialName: data['initialName'],
+          initialIcon: data['initialIcon'],
+          isSubtopic: data['isSubtopic'] ?? false,
+        );
+      },
+    ),
     ...TopicsRouter().routes,
   ];
 }
