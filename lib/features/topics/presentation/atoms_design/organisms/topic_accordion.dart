@@ -13,6 +13,7 @@ class TopicAccordion extends StatefulWidget {
   final bool shouldExpand;
   final ValueChanged<SubtopicEntity>? onSubtopic;
   final VoidCallback? onEditTopic;
+  final ValueChanged<SubtopicEntity>? onEditSubtopic;
   final VoidCallback? onAddSubtopic;
 
   const TopicAccordion({
@@ -25,6 +26,7 @@ class TopicAccordion extends StatefulWidget {
     this.shouldExpand = false,
     this.onSubtopic,
     this.onEditTopic,
+    this.onEditSubtopic,
     this.onAddSubtopic,
   });
 
@@ -185,7 +187,11 @@ class _TopicAccordionState extends State<TopicAccordion>
                     topicId: widget.topic.id,
                   ),
                 ),
-                child: SubtopicItem(subtopic: widget.subtopics[index]),
+                child: SubtopicItem(
+                  subtopic: widget.subtopics[index],
+                  onEdit: () =>
+                      widget.onEditSubtopic?.call(widget.subtopics[index]),
+                ),
               ),
             ),
 
