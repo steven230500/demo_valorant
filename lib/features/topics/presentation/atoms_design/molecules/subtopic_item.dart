@@ -4,8 +4,14 @@ import 'package:flutter/material.dart';
 class SubtopicItem extends StatelessWidget {
   final SubtopicEntity subtopic;
   final VoidCallback? onTap;
+  final VoidCallback? onEdit;
 
-  const SubtopicItem({super.key, required this.subtopic, this.onTap});
+  const SubtopicItem({
+    super.key,
+    required this.subtopic,
+    this.onTap,
+    this.onEdit,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +54,15 @@ class SubtopicItem extends StatelessWidget {
                     ),
                   ),
                 ),
+                if (onEdit != null)
+                  IconButton(
+                    icon: const Icon(Icons.edit, size: 18, color: Colors.grey),
+                    onPressed: onEdit,
+                    splashRadius: 20,
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                  ),
+                const SizedBox(width: 8),
                 const Icon(Icons.chevron_right, size: 18, color: Colors.grey),
               ],
             ),

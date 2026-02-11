@@ -13,6 +13,7 @@ class TopicAccordionWidget extends StatelessWidget {
   final VoidCallback? onTapInEmpty;
   final ValueChanged<SubtopicEntity>? onSubtopic;
   final VoidCallback? onEditTopic;
+  final ValueChanged<SubtopicEntity>? onEditSubtopic;
   final VoidCallback? onAddSubtopic;
 
   const TopicAccordionWidget({
@@ -21,6 +22,7 @@ class TopicAccordionWidget extends StatelessWidget {
     this.onTapInEmpty,
     this.onSubtopic,
     this.onEditTopic,
+    this.onEditSubtopic,
     this.onAddSubtopic,
   });
 
@@ -68,6 +70,14 @@ class TopicAccordionWidget extends StatelessWidget {
                       'initialIcon': topic.icon,
                       'isSubtopic': false,
                     },
+                  );
+                },
+            onEditSubtopic:
+                onEditSubtopic ??
+                (subtopic) {
+                  context.pushNamed(
+                    AppRouter.create.name,
+                    extra: {'topic': topic, 'subtopic': subtopic},
                   );
                 },
             onAddSubtopic:
