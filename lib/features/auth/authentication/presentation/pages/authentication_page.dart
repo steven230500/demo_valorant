@@ -1,3 +1,4 @@
+import 'package:demo_valorant/features/auth/authentication/presentation/widgets/molecules/role_option_card.dart';
 import 'package:demo_valorant/features/utils/atoms_design/organisms/custom_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -5,6 +6,7 @@ import 'package:get_it/get_it.dart';
 import 'package:commons/commons.dart';
 import '../../../../../core/router/app_router.dart';
 import '../../../../utils/helper_demo.dart';
+import '../../data/cache/session_cache.dart';
 import '../bloc/authentication_bloc.dart';
 
 class AuthenticationPage extends StatelessWidget {
@@ -64,6 +66,7 @@ class _AuthenticationPageContainerState
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  bool selectedType = false;
 
   @override
   void dispose() {
@@ -118,7 +121,36 @@ class _AuthenticationPageContainerState
                       ?.copyWith(color: Colors.grey[600]),
                 ),
                 const SizedBox(height: 32),
-                TextFormField(
+                if(!selectedType)
+                  Row(
+                  children: [
+                    Expanded(
+                      child: RoleOptionCard(
+                        label: "Administrador",
+                        onPressed: (){
+                          setState(() {
+                            selectedType = true;
+                          });
+                          cacheUser.roleSelected = RoleUser.admin;
+                        },
+                      ),
+                    ),
+                    SizedBox(width: 32,),
+                    Expanded(
+                      child: RoleOptionCard(
+                        label: "Lector",
+                        onPressed: (){
+                          setState(() {
+                            selectedType = true;
+                          });
+                          cacheUser.roleSelected = RoleUser.viewer;
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                if(selectedType)
+                  TextFormField(
                   controller: _emailController,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -136,8 +168,10 @@ class _AuthenticationPageContainerState
                   ),
                   keyboardType: TextInputType.emailAddress,
                 ),
-                const SizedBox(height: 16),
-                TextFormField(
+                if(selectedType)
+                  const SizedBox(height: 16),
+                if(selectedType)
+                  TextFormField(
                   controller: _passwordController,
                   obscureText: true,
                   validator: (value) {
@@ -156,7 +190,8 @@ class _AuthenticationPageContainerState
                   ),
                 ),
                 const SizedBox(height: 24),
-                ElevatedButton(
+                if(selectedType)
+                  ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     backgroundColor: Colors.blueAccent,
@@ -177,6 +212,27 @@ class _AuthenticationPageContainerState
                   },
                   child: const Text('INICIAR SESIÓN'),
                 ),
+                if(selectedType)
+                  const SizedBox(height: 16),
+                if(selectedType)
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.blueAccent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        selectedType = false;
+                      });
+                      cacheUser.roleSelected = null;
+
+                    },
+                    child: const Text('Cambiar de rol'),
+                  ),
               ],
             ),
           ),

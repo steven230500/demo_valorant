@@ -1,3 +1,4 @@
+import 'package:demo_valorant/features/auth/authentication/data/cache/session_cache.dart';
 import 'package:demo_valorant/features/topics/domain/entities/subtopic_entity.dart';
 import 'package:flutter/material.dart';
 
@@ -34,7 +35,7 @@ class SubtopicItem extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(6),
                   decoration: BoxDecoration(
-                    color: Colors.blue.withOpacity(0.1),
+                    color: Colors.blue.withAlpha(25),
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(
@@ -54,7 +55,7 @@ class SubtopicItem extends StatelessWidget {
                     ),
                   ),
                 ),
-                if (onEdit != null)
+                if (onEdit != null && cacheUser.role == RoleUser.admin)
                   IconButton(
                     icon: const Icon(Icons.edit, size: 18, color: Colors.grey),
                     onPressed: onEdit,

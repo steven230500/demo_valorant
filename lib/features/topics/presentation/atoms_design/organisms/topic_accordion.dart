@@ -1,6 +1,7 @@
 import 'package:demo_valorant/features/topics/domain/entities/subtopic_entity.dart';
 import 'package:demo_valorant/features/topics/domain/entities/topic_entity.dart';
 import 'package:flutter/material.dart';
+import '../../../../auth/authentication/data/cache/session_cache.dart';
 import '../atoms/topic_icon.dart';
 import '../molecules/subtopic_item.dart';
 
@@ -115,7 +116,7 @@ class _TopicAccordionState extends State<TopicAccordion>
                         ),
                       ),
                     ),
-                    if (widget.onEditTopic != null)
+                    if (widget.onEditTopic != null && cacheUser.role == RoleUser.admin)
                       IconButton(
                         icon: const Icon(
                           Icons.edit,
@@ -201,7 +202,7 @@ class _TopicAccordionState extends State<TopicAccordion>
               style: const TextStyle(color: Colors.red),
             ),
 
-          if (widget.onAddSubtopic != null)
+          if (widget.onAddSubtopic != null && cacheUser.role == RoleUser.admin)
             Padding(
               padding: const EdgeInsets.only(top: 8.0),
               child: TextButton.icon(
@@ -211,7 +212,7 @@ class _TopicAccordionState extends State<TopicAccordion>
                 style: TextButton.styleFrom(
                   foregroundColor: Colors.blue,
                   padding: const EdgeInsets.symmetric(vertical: 12),
-                  backgroundColor: Colors.blue.withOpacity(0.05),
+                  backgroundColor: Colors.blue.withAlpha(13),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),

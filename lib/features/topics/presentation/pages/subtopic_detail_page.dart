@@ -40,6 +40,7 @@ class SubtopicDetailPage extends StatelessWidget {
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: state.details
                             .map(
                               (e) =>
@@ -94,16 +95,24 @@ class SubtopicDetailPage extends StatelessWidget {
             ),
           ),
         );
-      case SubtopicDetailType.code:
-        return Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(3),
-            border: Border.all(color: Colors.grey),
-          ),
-          child: DartCodeViewer(
-            entity.content,
+      case SubtopicDetailType.code: {
+        final int lineCount = entity.content.split('\n').length;
+        final double calculatedHeight = (lineCount * 24.0) + 40.0;
+
+        return IntrinsicHeight(
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(3),
+              border: Border.all(color: Colors.grey),
+              color: Colors.green,
+            ),
+            child: DartCodeViewer(
+              entity.content,
+              height: calculatedHeight,
+            ),
           ),
         );
+      }
       case SubtopicDetailType.url:
         return Padding(
           padding: const EdgeInsets.only(bottom: 16.0),

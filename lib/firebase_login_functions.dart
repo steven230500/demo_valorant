@@ -1,5 +1,8 @@
+import 'package:commons/commons.dart';
+import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'features/auth/authentication/data/cache/session_cache.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -25,6 +28,49 @@ class AuthService {
         email: email,
         password: password,
       );
+
+      if(credential.user != null) {
+        final token = await credential.user?.getIdToken();
+        debugPrint(token);
+        final client = Dio(
+          BaseOptions(
+            baseUrl: Constants.baseUrl,
+            connectTimeout: const Duration(seconds: 10),
+            receiveTimeout: const Duration(seconds: 10),
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              'Authorization': 'Bearer $token'
+            },
+          ),
+        );
+        if(cacheUser.roleSelected != null) {
+          try{
+            final isAdmin = cacheUser.roleSelected == RoleUser.admin;
+            final resultUserData = await client.post(
+              '/user',
+              data: {"isAdmin": isAdmin },
+            );
+
+            if(resultUserData.statusCode == 200){
+              cacheUser.name = resultUserData.data["user"]["name"];
+              cacheUser.role = resultUserData.data["user"]["role"] == "admin"
+                  ? RoleUser.admin
+                  : RoleUser.viewer;
+            }
+            else {
+              signOut();
+              throw resultUserData;
+            }
+          }
+          catch(e){
+            signOut();
+            rethrow;
+          }
+
+        }
+      }
+
       return credential;
     } on FirebaseAuthException catch (e) {
       _handleAuthError(e);
@@ -35,6 +81,7 @@ class AuthService {
   // 4. Cerrar Sesión
   Future<void> signOut() async {
     try {
+      cacheUser.clear();
       await _auth.signOut();
     } catch (e) {
       debugPrint("Error al cerrar sesión: $e");

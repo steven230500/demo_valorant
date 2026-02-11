@@ -28,6 +28,7 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
     try {
       final credential = await authService.signInWithEmail(email, password);
       if (credential?.user != null) {
+
         return Success<UserEntity>(
           UserModel.fromFirebaseUser(credential!.user!),
         );

@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/injectors/injector.dart';
 import '../../../../core/router/app_router.dart';
 import '../../../../firebase_login_functions.dart';
+import '../../../auth/authentication/data/cache/session_cache.dart';
 import '../bloc/topics_bloc/topics_bloc.dart';
 import '../topics_router/topics_router.dart';
 import '../widgets/topic_accordion_widget.dart';
@@ -84,7 +85,7 @@ class TopicsPage extends StatelessWidget {
             return const Center(child: Text('No topics loaded'));
           },
         ),
-        floatingActionButton: FloatingActionButton(
+        floatingActionButton: cacheUser.role == RoleUser.admin ? FloatingActionButton(
           onPressed: () {
             context.pushNamed(
               AppRouter.topicForm.name,
@@ -92,7 +93,7 @@ class TopicsPage extends StatelessWidget {
             );
           },
           child: const Icon(Icons.add),
-        ),
+        ) : null,
       ),
     );
   }
